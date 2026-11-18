@@ -1,0 +1,438 @@
+﻿{
+    "info":  {
+                 "name":  "Employee Management API",
+                 "description":  "Laravel Employee Management System API - Sanctum authentication, employee CRUD, filtering, pagination and validation tests.",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+             },
+    "auth":  {
+                 "type":  "bearer",
+                 "bearer":  [
+                                {
+                                    "key":  "token",
+                                    "value":  "{{adminToken}}",
+                                    "type":  "string"
+                                }
+                            ]
+             },
+    "variable":  [
+                     {
+                         "key":  "baseUrl",
+                         "value":  "http://127.0.0.1:8000"
+                     },
+                     {
+                         "key":  "adminEmail",
+                         "value":  ""
+                     },
+                     {
+                         "key":  "adminPassword",
+                         "value":  ""
+                     },
+                     {
+                         "key":  "adminToken",
+                         "value":  ""
+                     },
+                     {
+                         "key":  "employeeId",
+                         "value":  ""
+                     },
+                     {
+                         "key":  "newEmployeeCode",
+                         "value":  ""
+                     },
+                     {
+                         "key":  "newEmployeeEmail",
+                         "value":  ""
+                     }
+                 ],
+    "item":  [
+                 {
+                     "name":  "01 - Authentication",
+                     "item":  [
+                                  {
+                                      "name":  "Login",
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               },
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\",\n  \"device_name\": \"Postman\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/login"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Login returns HTTP 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "const body = pm.response.json();",
+                                                                                    "pm.test(\u0027Login returns a Bearer token\u0027, function () { pm.expect(body.access_token).to.be.a(\u0027string\u0027).and.not.empty; pm.expect(body.token_type).to.eql(\u0027Bearer\u0027); });",
+                                                                                    "if (body.access_token) { pm.collectionVariables.set(\u0027adminToken\u0027, body.access_token); }",
+                                                                                    "if (body.user) { pm.collectionVariables.set(\u0027loggedInRole\u0027, body.user.role); }"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "02 - Employee CRUD",
+                     "item":  [
+                                  {
+                                      "name":  "List Employees",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/employees"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027List returns HTTP 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "const body = pm.response.json();",
+                                                                                    "pm.test(\u0027Response contains employee data and pagination\u0027, function () { pm.expect(body).to.have.property(\u0027data\u0027); pm.expect(body.data).to.be.an(\u0027array\u0027); pm.expect(body).to.have.property(\u0027meta\u0027); pm.expect(body).to.have.property(\u0027links\u0027); });",
+                                                                                    "",
+                                                                                    "const listResponseForId = pm.response.json();",
+                                                                                    "if (listResponseForId.data \u0026\u0026 listResponseForId.data.length \u003e 0) {",
+                                                                                    "    pm.collectionVariables.set(\u0027employeeId\u0027, listResponseForId.data[0].id);",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Show Employee",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/employees/{{employeeId}}"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Show employee returns HTTP 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "const body = pm.response.json();",
+                                                                                    "pm.test(\u0027Response contains employee resource\u0027, function () { pm.expect(body.data).to.have.property(\u0027id\u0027); pm.expect(body.data).to.have.property(\u0027employee_code\u0027); pm.expect(body.data).to.have.property(\u0027email\u0027); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Create Employee",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "prerequest",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "const code = \u0027EMP\u0027 + Math.floor(100 + Math.random() * 900);",
+                                                                                    "const email = \u0027api.test.\u0027 + Date.now() + \u0027@example.com\u0027;",
+                                                                                    "pm.collectionVariables.set(\u0027newEmployeeCode\u0027, code);",
+                                                                                    "pm.collectionVariables.set(\u0027newEmployeeEmail\u0027, email);"
+                                                                                ]
+                                                                   }
+                                                    },
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Create employee returns HTTP 201\u0027, function () { pm.response.to.have.status(201); });",
+                                                                                    "const body = pm.response.json();",
+                                                                                    "pm.test(\u0027Created employee has expected fields\u0027, function () { pm.expect(body.data).to.have.property(\u0027id\u0027); pm.expect(body.data.employee_code).to.eql(pm.collectionVariables.get(\u0027newEmployeeCode\u0027)); });",
+                                                                                    "if (body.data \u0026\u0026 body.data.id) { pm.collectionVariables.set(\u0027employeeId\u0027, body.data.id); }"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"employee_code\": \"{{newEmployeeCode}}\",\n  \"name\": \"API Test Employee\",\n  \"email\": \"{{newEmployeeEmail}}\",\n  \"role\": \"employee\",\n  \"designation\": \"Software Developer\",\n  \"phone\": \"9876543210\",\n  \"gender\": \"male\",\n  \"status\": \"inactive\",\n  \"date_of_birth\": \"1995-05-15\",\n  \"date_of_joining\": \"2024-01-15\",\n  \"salary\": 35000,\n  \"address\": \"API test employee address\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/employees"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Update Employee",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     },
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"name\": \"API Test Employee Updated\",\n  \"email\": \"{{newEmployeeEmail}}\",\n  \"phone\": \"9876543210\",\n  \"status\": \"inactive\",\n  \"designation\": \"Senior Software Developer\",\n  \"salary\": 42000,\n  \"address\": \"Updated API test address\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/employees/{{employeeId}}"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Update employee returns HTTP 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "const body = pm.response.json();",
+                                                                                    "pm.test(\u0027Employee name was updated\u0027, function () { pm.expect(body.data.name).to.eql(\u0027API Test Employee Updated\u0027); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Delete Employee (soft delete)",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/employees/{{employeeId}}"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Delete employee returns HTTP 204\u0027, function () { pm.response.to.have.status(204); });",
+                                                                                    "pm.collectionVariables.unset(\u0027employeeId\u0027);"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "03 - Search and Filters",
+                     "item":  [
+                                  {
+                                      "name":  "Search Employees",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/employees?search=Madhan"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Filter by Status",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/employees?status=active"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Filter by Department",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/employees?department_id=4"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Pagination - 5 per page",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/employees?per_page=5"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Invalid Filter - per_page 0",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/employees?per_page=0"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Invalid filter returns HTTP 422\u0027, function () { pm.response.to.have.status(422); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "04 - Authentication and Error Tests",
+                     "item":  [
+                                  {
+                                      "name":  "Unauthenticated Employee List - expect 401",
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               },
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/employees"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Unauthenticated request returns HTTP 401\u0027, function () { pm.response.to.have.status(401); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Nonexistent Employee - expect 404",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/employees/99999999"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Missing employee returns HTTP 404\u0027, function () { pm.response.to.have.status(404); });"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Logout",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/logout"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027Logout returns HTTP 200\u0027, function () { pm.response.to.have.status(200); });",
+                                                                                    "pm.collectionVariables.unset(\u0027adminToken\u0027);"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 }
+             ]
+}
