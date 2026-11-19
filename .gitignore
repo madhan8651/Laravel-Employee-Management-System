@@ -47,3 +47,6 @@ Thumbs.db
 
 # Generated Postman test reports
 /postman/reports/
+
+# Environment backup files
+.env.backup_*
