@@ -23,11 +23,6 @@
         <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4 pb-4 border-bottom">
             <div>
                 <div class="d-flex align-items-center gap-2 mb-2">
-                    <div class="rounded-circle bg-primary-subtle text-primary
-                                d-flex align-items-center justify-content-center"
-                         style="width: 48px; height: 48px;">
-                        <i class="bi bi-building fs-4"></i>
-                    </div>
 
                     <h2 class="h4 fw-bold mb-0">
                         {{ $department->name }}
@@ -49,11 +44,6 @@
 
         {{-- Department Details --}}
         <div class="mb-4">
-            <h3 class="h5 fw-bold mb-1">Department Information</h3>
-            <p class="text-secondary mb-0">
-                Overview of the department and its current team size.
-            </p>
-        </div>
 
         <div class="row g-4">
 

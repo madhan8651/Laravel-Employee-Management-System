@@ -12,13 +12,13 @@ Route::post('/login', [AuthController::class, 'login']);
 // Protected API routes
 Route::middleware('auth:sanctum')->group(function () {
 
-    // Authentication
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/user', fn (Request $request) => $request->user());
+// Authentication
+Route::post('/logout', [AuthController::class, 'logout']);
+Route::get('/user', fn (Request $request) => $request->user());
 
-    // Employee REST API resource routes
-    Route::apiResource('employees', EmployeeController::class);
+// Employee REST API resource routes
+Route::apiResource('employees', EmployeeController::class);
 
-    // Department REST API
-    Route::get('/departments', [DepartmentController::class, 'index']);
+// Department REST API
+Route::get('/departments', [DepartmentController::class, 'index']);
 });
