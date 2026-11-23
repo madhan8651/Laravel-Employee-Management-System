@@ -1,18 +1,18 @@
 <?php
 
-use App\Models\Employee;
-use App\Models\User;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProfilePhotoController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\UserController;
+use App\Models\Employee;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfilePhotoController;
 
 // Homepage
 Route::get('/', fn () => redirect()->route('login'));
@@ -37,7 +37,7 @@ Route::middleware([
             '/employees/{employee}/toggle-status',
             [EmployeeController::class, 'toggleStatus']
         )->whereNumber('employee')
-         ->name('employees.toggle-status');
+            ->name('employees.toggle-status');
 
         // Employee management
         Route::resource('employees', EmployeeController::class)
@@ -48,7 +48,7 @@ Route::middleware([
             '/departments/{department}/toggle-status',
             [DepartmentController::class, 'toggleStatus']
         )->whereNumber('department')
-         ->name('departments.toggle-status');
+            ->name('departments.toggle-status');
 
         // Department management
         Route::resource('departments', DepartmentController::class)

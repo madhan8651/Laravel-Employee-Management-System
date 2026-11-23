@@ -5,11 +5,13 @@ namespace App\Services;
 use App\Events\EmployeeCreated;
 use App\Models\Employee;
 use App\Models\User;
+use App\Notifications\PasswordSetupNotification;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Throwable;
@@ -111,7 +113,7 @@ class EmployeeService
             ['email' => $employee->email],
             function (User $user, string $token) use ($employee) {
                 $user->notify(
-                    new \App\Notifications\PasswordSetupNotification(
+                    new PasswordSetupNotification(
                         $token,
                         $employee
                     )
@@ -120,7 +122,7 @@ class EmployeeService
         );
 
         if ($status !== Password::RESET_LINK_SENT) {
-            \Illuminate\Support\Facades\Log::warning(
+            Log::warning(
                 'Password setup email was not sent.',
                 [
                     'employee_id' => $employee->id,

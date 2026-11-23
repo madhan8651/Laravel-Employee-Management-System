@@ -1,14 +1,15 @@
 <?php
 
+use App\Exceptions\DepartmentHasEmployeesException;
+use App\Http\Middleware\EnsureUserIsActive;
+use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Http\Middleware\SecurityHeaders;
+use App\Http\Middleware\TrackRequestContext;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Http\Request;
 use Illuminate\Http\Exceptions\PostTooLargeException;
-use App\Exceptions\DepartmentHasEmployeesException;
-use App\Http\Middleware\EnsureUserIsAdmin;
-use App\Http\Middleware\EnsureUserIsActive;
-use App\Http\Middleware\TrackRequestContext;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -19,7 +20,6 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
 
-
         // Enable Sanctum authentication for first-party SPA requests.
         $middleware->statefulApi();
 
@@ -27,7 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->throttleApi();
 
         $middleware->append(TrackRequestContext::class);
-        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+        $middleware->append(SecurityHeaders::class);
 
         // Route middleware aliases
         $middleware->alias([
@@ -40,8 +40,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Preserve JSON responses for API requests.
         $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) =>
-                $request->is('api/*') || $request->expectsJson(),
+            fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
 
         // Handle attempts to delete departments that still have employees.
@@ -77,5 +76,3 @@ return Application::configure(basePath: dirname(__DIR__))
 
     })
     ->create();
-
-

@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Employee;
 use App\Models\Department;
+use App\Models\Employee;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

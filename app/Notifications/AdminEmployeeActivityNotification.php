@@ -37,7 +37,7 @@ class AdminEmployeeActivityNotification extends Notification
     public function toArray(object $_notifiable): array
     {
         return [
-            'title' => 'Employee ' . ucfirst($this->action),
+            'title' => 'Employee '.ucfirst($this->action),
             'message' => $this->message(),
             'employee_id' => $this->employee->getKey(),
             'employee_code' => $this->employee->employee_code,

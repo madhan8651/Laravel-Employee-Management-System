@@ -2,9 +2,9 @@
 
 namespace App\Observers;
 
+use App\Jobs\SendBirthdayWishJob;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Auth;
-use App\Jobs\SendBirthdayWishJob;
 
 class EmployeeObserver
 {

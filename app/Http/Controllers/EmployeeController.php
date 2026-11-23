@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\EmployeeRepositoryInterface;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Department;
 use App\Models\Employee;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
-use Throwable;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Password;
-use App\Services\EmployeeService;
-use App\Contracts\EmployeeRepositoryInterface;
 use App\Notifications\EmployeeUpdatedNotification;
 use App\Services\AdminNotificationService;
+use App\Services\EmployeeService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class EmployeeController extends Controller
 {
@@ -29,8 +29,7 @@ class EmployeeController extends Controller
      */
     public function __construct(
         private EmployeeRepositoryInterface $employeeRepository
-    ) {
-    }
+    ) {}
 
     /**
      * Display employees with filtering, sorting and pagination.
@@ -73,13 +72,13 @@ class EmployeeController extends Controller
          * Restore saved preferences only when the URL does not
          * explicitly provide filter parameters.
          */
-        if (!$hasFilterParameters) {
+        if (! $hasFilterParameters) {
             $savedFilters = $request->session()->get(
                 'employee_filters',
                 []
             );
 
-            if (!is_array($savedFilters) || empty($savedFilters)) {
+            if (! is_array($savedFilters) || empty($savedFilters)) {
                 $cookieValue = $request->cookie(
                     'employee_filter_preference'
                 );
@@ -157,11 +156,11 @@ class EmployeeController extends Controller
         $sortBy = $filters['sort'];
         $direction = $filters['direction'];
 
-        if (!isset($sortOptions[$sortBy])) {
+        if (! isset($sortOptions[$sortBy])) {
             $sortBy = 'name';
         }
 
-        if (!in_array($direction, ['asc', 'desc'], true)) {
+        if (! in_array($direction, ['asc', 'desc'], true)) {
             $direction = 'asc';
         }
 
@@ -287,7 +286,7 @@ class EmployeeController extends Controller
 
         } catch (Throwable $exception) {
 
-            if ($exception instanceof \Illuminate\Validation\ValidationException) {
+            if ($exception instanceof ValidationException) {
                 throw $exception;
             }
 
@@ -366,7 +365,7 @@ class EmployeeController extends Controller
 
             $updated = $employee->update($validated);
 
-            if (!$updated) {
+            if (! $updated) {
                 throw new \RuntimeException(
                     'Failed to update employee record.'
                 );
@@ -379,7 +378,7 @@ class EmployeeController extends Controller
                 ->all();
 
             // Notify Admins about the employee update.
-            if (!empty($changedFields)) {
+            if (! empty($changedFields)) {
                 try {
                     $adminNotificationService->notifyAdmins(
                         $employee->fresh(),
@@ -427,7 +426,7 @@ class EmployeeController extends Controller
         }
 
         // Notify the employee if profile information actually changed.
-        if (!empty($changedFields) && $employee->user) {
+        if (! empty($changedFields) && $employee->user) {
             try {
                 $employee->user->notify(
                     new EmployeeUpdatedNotification(
@@ -458,8 +457,7 @@ class EmployeeController extends Controller
     public function toggleStatus(
         Employee $employee,
         AdminNotificationService $adminNotificationService
-    )
-    {
+    ) {
         Gate::authorize('update', $employee);
 
         $currentStatus = $employee->status?->value;
@@ -533,8 +531,7 @@ class EmployeeController extends Controller
     public function destroy(
         Employee $employee,
         AdminNotificationService $adminNotificationService
-    )
-    {
+    ) {
         Gate::authorize('delete', $employee);
 
         $photoPath = $employee->profile_photo;
@@ -613,9 +610,3 @@ class EmployeeController extends Controller
             );
     }
 }
-
-
-
-
-
-

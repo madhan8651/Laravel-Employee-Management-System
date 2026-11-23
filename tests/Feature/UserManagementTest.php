@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -97,7 +99,7 @@ class UserManagementTest extends TestCase
             'email' => 'employee@example.com',
         ]);
 
-        $employee = \App\Models\Employee::factory()->create([
+        $employee = Employee::factory()->create([
             'user_id' => $user->getKey(),
             'name' => 'Old Employee Name',
         ]);
@@ -124,94 +126,94 @@ class UserManagementTest extends TestCase
         ]);
     }
 
-        public function test_admin_cannot_update_user_with_password_missing_uppercase(): void
-        {
-            $admin = User::factory()->create([
-                'role' => 'admin',
-                'status' => 'active',
-            ]);
+    public function test_admin_cannot_update_user_with_password_missing_uppercase(): void
+    {
+        $admin = User::factory()->create([
+            'role' => 'admin',
+            'status' => 'active',
+        ]);
 
-            $user = User::factory()->create([
-                'role' => 'employee',
-                'password' => bcrypt('OldPassword123!'),
-            ]);
+        $user = User::factory()->create([
+            'role' => 'employee',
+            'password' => bcrypt('OldPassword123!'),
+        ]);
 
-            $this->actingAs($admin)
-                ->put(route('admin.users.update', $user), [
-                    'name' => 'Test Employee',
-                    'email' => $user->email,
-                    'password' => 'newpassword123',
-                    'password_confirmation' => 'newpassword123',
-                ])
-                ->assertSessionHasErrors('password');
+        $this->actingAs($admin)
+            ->put(route('admin.users.update', $user), [
+                'name' => 'Test Employee',
+                'email' => $user->email,
+                'password' => 'newpassword123',
+                'password_confirmation' => 'newpassword123',
+            ])
+            ->assertSessionHasErrors('password');
 
-            $this->assertTrue(
-                \Illuminate\Support\Facades\Hash::check(
-                    'OldPassword123!',
-                    $user->fresh()->password
-                )
-            );
-        }
+        $this->assertTrue(
+            Hash::check(
+                'OldPassword123!',
+                $user->fresh()->password
+            )
+        );
+    }
 
-        public function test_admin_cannot_update_user_with_password_missing_lowercase(): void
-        {
-            $admin = User::factory()->create([
-                'role' => 'admin',
-                'status' => 'active',
-            ]);
+    public function test_admin_cannot_update_user_with_password_missing_lowercase(): void
+    {
+        $admin = User::factory()->create([
+            'role' => 'admin',
+            'status' => 'active',
+        ]);
 
-            $user = User::factory()->create([
-                'role' => 'employee',
-                'password' => bcrypt('OldPassword123!'),
-            ]);
+        $user = User::factory()->create([
+            'role' => 'employee',
+            'password' => bcrypt('OldPassword123!'),
+        ]);
 
-            $this->actingAs($admin)
-                ->put(route('admin.users.update', $user), [
-                    'name' => 'Test Employee',
-                    'email' => $user->email,
-                    'password' => 'NEWPASSWORD123',
-                    'password_confirmation' => 'NEWPASSWORD123',
-                ])
-                ->assertSessionHasErrors('password');
+        $this->actingAs($admin)
+            ->put(route('admin.users.update', $user), [
+                'name' => 'Test Employee',
+                'email' => $user->email,
+                'password' => 'NEWPASSWORD123',
+                'password_confirmation' => 'NEWPASSWORD123',
+            ])
+            ->assertSessionHasErrors('password');
 
-            $this->assertTrue(
-                \Illuminate\Support\Facades\Hash::check(
-                    'OldPassword123!',
-                    $user->fresh()->password
-                )
-            );
-        }
+        $this->assertTrue(
+            Hash::check(
+                'OldPassword123!',
+                $user->fresh()->password
+            )
+        );
+    }
 
-        public function test_admin_cannot_update_user_with_password_missing_number(): void
-        {
-            $admin = User::factory()->create([
-                'role' => 'admin',
-                'status' => 'active',
-            ]);
+    public function test_admin_cannot_update_user_with_password_missing_number(): void
+    {
+        $admin = User::factory()->create([
+            'role' => 'admin',
+            'status' => 'active',
+        ]);
 
-            $user = User::factory()->create([
-                'role' => 'employee',
-                'password' => bcrypt('OldPassword123!'),
-            ]);
+        $user = User::factory()->create([
+            'role' => 'employee',
+            'password' => bcrypt('OldPassword123!'),
+        ]);
 
-            $this->actingAs($admin)
-                ->put(route('admin.users.update', $user), [
-                    'name' => 'Test Employee',
-                    'email' => $user->email,
-                    'password' => 'NewPasswordABC',
-                    'password_confirmation' => 'NewPasswordABC',
-                ])
-                ->assertSessionHasErrors('password');
+        $this->actingAs($admin)
+            ->put(route('admin.users.update', $user), [
+                'name' => 'Test Employee',
+                'email' => $user->email,
+                'password' => 'NewPasswordABC',
+                'password_confirmation' => 'NewPasswordABC',
+            ])
+            ->assertSessionHasErrors('password');
 
-            $this->assertTrue(
-                \Illuminate\Support\Facades\Hash::check(
-                    'OldPassword123!',
-                    $user->fresh()->password
-                )
-            );
-        }
+        $this->assertTrue(
+            Hash::check(
+                'OldPassword123!',
+                $user->fresh()->password
+            )
+        );
+    }
 
-        public function test_admin_can_delete_standalone_user_and_profile(): void
+    public function test_admin_can_delete_standalone_user_and_profile(): void
     {
         $admin = User::factory()->create([
             'role' => 'admin',
@@ -251,7 +253,7 @@ class UserManagementTest extends TestCase
             'role' => 'employee',
         ]);
 
-        $employee = \App\Models\Employee::factory()->create([
+        $employee = Employee::factory()->create([
             'user_id' => $user->getKey(),
             'name' => 'Employee History',
         ]);

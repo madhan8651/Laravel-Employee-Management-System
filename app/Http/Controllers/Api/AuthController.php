@@ -25,7 +25,7 @@ class AuthController extends Controller
         ]);
 
         $throttleKey = Str::transliterate(
-            Str::lower($validated['email']) . '|' . $request->ip()
+            Str::lower($validated['email']).'|'.$request->ip()
         );
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {

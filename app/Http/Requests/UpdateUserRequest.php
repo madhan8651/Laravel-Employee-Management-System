@@ -2,20 +2,19 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Role;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Enums\Role;
 use Illuminate\Validation\Rules\Password;
 
 class UpdateUserRequest extends FormRequest
 {
-    
-public function authorize(): bool
-{
-    return $this->user()?->role === Role::Admin
-        && $this->route('user') instanceof User;
-}
+    public function authorize(): bool
+    {
+        return $this->user()?->role === Role::Admin
+            && $this->route('user') instanceof User;
+    }
 
     public function rules(): array
     {

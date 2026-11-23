@@ -10,28 +10,28 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('activity_logs', function (Blueprint $table) {
-        $table->id();
+    {
+        Schema::create('activity_logs', function (Blueprint $table) {
+            $table->id();
 
-        $table->string('action');
-        $table->text('description')->nullable();
+            $table->string('action');
+            $table->text('description')->nullable();
 
-        // Polymorphic relationship
-        $table->morphs('loggable');
+            // Polymorphic relationship
+            $table->morphs('loggable');
 
-        // User who performed the action (optional)
-        $table->foreignId('user_id')
-            ->nullable()
-            ->constrained('users')
-            ->nullOnDelete();
+            // User who performed the action (optional)
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
 
-        $table->json('old_values')->nullable();
-        $table->json('new_values')->nullable();
+            $table->json('old_values')->nullable();
+            $table->json('new_values')->nullable();
 
-        $table->timestamps();
-    });
-}
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

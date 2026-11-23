@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Traits\HasProfilePhoto;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Traits\HasProfilePhoto;
 
 class UserProfile extends Model
 {

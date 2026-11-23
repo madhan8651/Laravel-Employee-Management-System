@@ -15,13 +15,12 @@ class BirthdayWishMail extends Mailable
 
     public function __construct(
         public Employee $employee
-    ) {
-    }
+    ) {}
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Happy Birthday, ' . $this->employee->name . '! 🎂'
+            subject: 'Happy Birthday, '.$this->employee->name.'! 🎂'
         );
     }
 

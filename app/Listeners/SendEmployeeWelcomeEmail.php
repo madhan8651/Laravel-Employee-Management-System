@@ -14,7 +14,8 @@ class SendEmployeeWelcomeEmail implements ShouldQueue
 
     public array $backoff = [30, 60, 120];
 
-    public function handle(EmployeeCreated $event): void {
+    public function handle(EmployeeCreated $event): void
+    {
         $status = app(EmployeeService::class)->sendPasswordSetupLink(
             $event->employee
         );

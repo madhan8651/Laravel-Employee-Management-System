@@ -2,20 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\Role;
+use App\Notifications\CustomVerifyEmailNotification;
+use App\Notifications\PasswordSetupNotification;
+use App\Traits\HasProfilePhoto;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Sanctum\HasApiTokens;
-use App\Notifications\PasswordSetupNotification;
-use App\Notifications\CustomVerifyEmailNotification;
-use App\Traits\HasProfilePhoto;
-use App\Enums\Role;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 #[Fillable([
     'email',
@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable, HasProfilePhoto;
+    use HasApiTokens, HasFactory, HasProfilePhoto, Notifiable;
 
     /**
      * Get the attributes that should be cast.
@@ -40,6 +40,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'role' => Role::class,
         ];
     }
+
     public function employee(): HasOne
     {
         return $this->hasOne(Employee::class);
@@ -61,7 +62,7 @@ class User extends Authenticatable implements MustVerifyEmail
             ? $this->getRelation('employee')
             : null;
 
-        if (!$employee) {
+        if (! $employee) {
             $employee = $this->getRelationValue('employeeIncludingTrashed');
         }
 
@@ -102,12 +103,13 @@ class User extends Authenticatable implements MustVerifyEmail
         );
     }
 
-public function sendPasswordResetNotification($token): void
-{
-    $this->notify(new PasswordSetupNotification($token));
-}
-public function sendEmailVerificationNotification(): void
-{
-    $this->notify(new CustomVerifyEmailNotification());
-}
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new PasswordSetupNotification($token));
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new CustomVerifyEmailNotification);
+    }
 }

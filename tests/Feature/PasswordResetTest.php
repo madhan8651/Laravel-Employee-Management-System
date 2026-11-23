@@ -20,25 +20,23 @@ class PasswordResetTest extends TestCase
             ->assertOk();
     }
 
-    
-public function test_registered_user_can_request_password_reset_link(): void
-{
-    Notification::fake();
+    public function test_registered_user_can_request_password_reset_link(): void
+    {
+        Notification::fake();
 
-    $user = User::factory()->create([
-        'email' => 'reset@example.com',
-    ]);
+        $user = User::factory()->create([
+            'email' => 'reset@example.com',
+        ]);
 
-    $response = $this->post(route('password.email'), [
-        'email' => $user->email,
-    ]);
+        $response = $this->post(route('password.email'), [
+            'email' => $user->email,
+        ]);
 
-    Notification::assertSentTo(
-    $user,
-    PasswordSetupNotification::class
-);
-}
-
+        Notification::assertSentTo(
+            $user,
+            PasswordSetupNotification::class
+        );
+    }
 
     public function test_unknown_email_cannot_request_a_reset_link(): void
     {

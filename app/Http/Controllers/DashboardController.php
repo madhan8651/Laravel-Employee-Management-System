@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Role;
 use App\Models\Department;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
-use App\Enums\Role;
 
 class DashboardController extends Controller
 {

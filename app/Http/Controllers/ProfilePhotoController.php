@@ -50,11 +50,11 @@ class ProfilePhotoController extends Controller
     {
         abort_if(
             empty($path) ||
-            !str_starts_with($path, $allowedDirectory),
+            ! str_starts_with($path, $allowedDirectory),
             404
         );
 
-        $filename = substr($path, strlen($allowedDirectory));
+        $filename = substr($path, \strlen($allowedDirectory));
 
         // Prevent directory traversal and unexpected filenames.
         abort_unless(
@@ -70,7 +70,7 @@ class ProfilePhotoController extends Controller
         $mimeType = $disk->mimeType($path);
 
         abort_unless(
-            in_array($mimeType, [
+            \in_array($mimeType, [
                 'image/jpeg',
                 'image/png',
                 'image/webp',

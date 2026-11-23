@@ -2,11 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\EmployeeStatus;
+use App\Enums\Role;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Enums\EmployeeStatus;
-use App\Enums\Role;
 
 class EnsureUserIsActive
 {

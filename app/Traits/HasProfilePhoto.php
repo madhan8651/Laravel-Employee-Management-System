@@ -2,6 +2,9 @@
 
 namespace App\Traits;
 
+use App\Models\Employee;
+use App\Models\User;
+
 trait HasProfilePhoto
 {
     /**
@@ -13,11 +16,11 @@ trait HasProfilePhoto
             return null;
         }
 
-        if ($this instanceof \App\Models\Employee) {
+        if ($this instanceof Employee) {
             return route('profile-photos.employee', $this->id, false);
         }
 
-        if ($this instanceof \App\Models\User) {
+        if ($this instanceof User) {
             return route('profile-photos.user', $this->id, false);
         }
 

@@ -15,7 +15,7 @@ return new class extends Migration
 
         // Create a generated column containing the email only
         // for active (non-deleted) employees.
-        DB::statement("
+        DB::statement('
             ALTER TABLE employees
             ADD COLUMN active_email VARCHAR(255)
             GENERATED ALWAYS AS (
@@ -24,7 +24,7 @@ return new class extends Migration
                     ELSE NULL
                 END
             ) STORED
-        ");
+        ');
 
         // Enforce uniqueness among active employees.
         Schema::table('employees', function ($table) {

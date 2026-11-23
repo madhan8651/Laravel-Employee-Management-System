@@ -114,98 +114,98 @@ class Module7DepartmentTest extends TestCase
         ]);
     }
 
-public function test_department_description_over_1000_characters_is_rejected(): void
-{
-    $admin = $this->createAdmin();
+    public function test_department_description_over_1000_characters_is_rejected(): void
+    {
+        $admin = $this->createAdmin();
 
-    $response = $this->actingAs($admin)->post(
-        route('admin.departments.store'),
-        [
+        $response = $this->actingAs($admin)->post(
+            route('admin.departments.store'),
+            [
+                'name' => 'Quality Assurance',
+                'description' => str_repeat('A', 1001),
+            ]
+        );
+
+        $response->assertSessionHasErrors('description');
+
+        $this->assertDatabaseMissing('departments', [
             'name' => 'Quality Assurance',
-            'description' => str_repeat('A', 1001),
-        ]
-    );
+        ]);
+    }
 
-    $response->assertSessionHasErrors('description');
+    public function test_duplicate_department_name_is_rejected_during_update(): void
+    {
+        $admin = $this->createAdmin();
 
-    $this->assertDatabaseMissing('departments', [
-        'name' => 'Quality Assurance',
-    ]);
-}
-
-public function test_duplicate_department_name_is_rejected_during_update(): void
-{
-    $admin = $this->createAdmin();
-
-    Department::factory()->create([
-        'name' => 'Quality Assurance',
-    ]);
-
-    $department = Department::factory()->create([
-        'name' => 'Human Resources',
-    ]);
-
-    $response = $this->actingAs($admin)->put(
-        route('admin.departments.update', $department),
-        [
+        Department::factory()->create([
             'name' => 'Quality Assurance',
-            'description' => 'Updated description',
-        ]
-    );
+        ]);
 
-    $response->assertSessionHasErrors('name');
+        $department = Department::factory()->create([
+            'name' => 'Human Resources',
+        ]);
 
-    $this->assertDatabaseHas('departments', [
-        'id' => $department->id,
-        'name' => 'Human Resources',
-    ]);
-}
+        $response = $this->actingAs($admin)->put(
+            route('admin.departments.update', $department),
+            [
+                'name' => 'Quality Assurance',
+                'description' => 'Updated description',
+            ]
+        );
 
-public function test_non_admin_cannot_update_department(): void
-{
-    $user = User::factory()->create();
-    $user->role = 'employee';
-    $user->save();
+        $response->assertSessionHasErrors('name');
 
-    $department = Department::factory()->create([
-        'name' => 'Quality Assurance',
-    ]);
+        $this->assertDatabaseHas('departments', [
+            'id' => $department->id,
+            'name' => 'Human Resources',
+        ]);
+    }
 
-    $response = $this->actingAs($user)->put(
-        route('admin.departments.update', $department),
-        [
-            'name' => 'Updated Department',
-            'description' => 'Updated description',
-        ]
-    );
+    public function test_non_admin_cannot_update_department(): void
+    {
+        $user = User::factory()->create();
+        $user->role = 'employee';
+        $user->save();
 
-    $response->assertForbidden();
+        $department = Department::factory()->create([
+            'name' => 'Quality Assurance',
+        ]);
 
-    $this->assertDatabaseHas('departments', [
-        'id' => $department->id,
-        'name' => 'Quality Assurance',
-    ]);
-}
+        $response = $this->actingAs($user)->put(
+            route('admin.departments.update', $department),
+            [
+                'name' => 'Updated Department',
+                'description' => 'Updated description',
+            ]
+        );
 
-public function test_non_admin_cannot_delete_department(): void
-{
-    $user = User::factory()->create();
-    $user->role = 'employee';
-    $user->save();
+        $response->assertForbidden();
 
-    $department = Department::factory()->create([
-        'name' => 'Quality Assurance',
-    ]);
+        $this->assertDatabaseHas('departments', [
+            'id' => $department->id,
+            'name' => 'Quality Assurance',
+        ]);
+    }
 
-    $response = $this->actingAs($user)->delete(
-        route('admin.departments.destroy', $department)
-    );
+    public function test_non_admin_cannot_delete_department(): void
+    {
+        $user = User::factory()->create();
+        $user->role = 'employee';
+        $user->save();
 
-    $response->assertForbidden();
+        $department = Department::factory()->create([
+            'name' => 'Quality Assurance',
+        ]);
 
-    $this->assertDatabaseHas('departments', [
-        'id' => $department->id,
-        'name' => 'Quality Assurance',
-    ]);
-}
+        $response = $this->actingAs($user)->delete(
+            route('admin.departments.destroy', $department)
+        );
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseHas('departments', [
+            'id' => $department->id,
+            'name' => 'Quality Assurance',
+        ]);
+    }
 }

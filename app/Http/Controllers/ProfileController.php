@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\AdminNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 use Throwable;
-use App\Services\AdminNotificationService;
 
 class ProfileController extends Controller
 {
@@ -25,8 +25,7 @@ class ProfileController extends Controller
     public function update(
         Request $request,
         AdminNotificationService $adminNotificationService
-    )
-    {
+    ) {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:30'],
@@ -34,8 +33,9 @@ class ProfileController extends Controller
             'profile_photo' => [
                 'nullable',
                 'image',
-                'mimes:' . implode(',', config('ems.upload.allowed_image_types')),
-                'max:' . config('ems.upload.max_size'),
+                'mimes:'.implode(',', config('ems.upload.allowed_image_types')),
+                'max:'.config('ems.upload.max_size'),
+                'dimensions:max_width=3000,max_height=3000',
             ],
         ]);
 
@@ -111,7 +111,7 @@ class ProfileController extends Controller
                 }
             });
 
-            if ($employee && !empty($changedFields)) {
+            if ($employee && ! empty($changedFields)) {
                 try {
                     $adminNotificationService->notifyAdmins(
                         $employee->fresh(),
@@ -187,8 +187,7 @@ class ProfileController extends Controller
         ) {
             return back()
                 ->withErrors([
-                    'current_password' =>
-                        'The current password is incorrect.',
+                    'current_password' => 'The current password is incorrect.',
                 ], 'passwordChange');
         }
 
@@ -205,12 +204,9 @@ class ProfileController extends Controller
                 ],
             ],
             [
-                'password.required' =>
-                    'Please enter a new password.',
-                'password.confirmed' =>
-                    'The new password and confirmation is not matching.',
-                'password.min' =>
-                    'The new password must be at least 12 characters.',
+                'password.required' => 'Please enter a new password.',
+                'password.confirmed' => 'The new password and confirmation is not matching.',
+                'password.min' => 'The new password must be at least 12 characters.',
             ]
         );
 

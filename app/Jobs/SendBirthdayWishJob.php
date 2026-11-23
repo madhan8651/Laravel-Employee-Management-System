@@ -25,7 +25,7 @@ class SendBirthdayWishJob implements ShouldQueue
     {
         $employee = Employee::find($this->employeeId);
 
-        if (!$employee) {
+        if (! $employee) {
             Log::warning('Birthday email job skipped: employee not found.', [
                 'employee_id' => $this->employeeId,
             ]);

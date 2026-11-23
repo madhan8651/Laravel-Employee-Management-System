@@ -13,8 +13,8 @@ use App\Services\EmployeeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Throwable;
 
 class EmployeeController extends Controller
@@ -75,22 +75,22 @@ class EmployeeController extends Controller
         }
 
         // Search by employee name, email or employee code.
-        if (!empty($validated['search'])) {
+        if (! empty($validated['search'])) {
             $query->search($validated['search']);
         }
 
         // Filter by department.
-        if (!empty($validated['department_id'])) {
+        if (! empty($validated['department_id'])) {
             $query->where('department_id', $validated['department_id']);
         }
 
         // Filter by employment status.
-        if (!empty($validated['status'])) {
+        if (! empty($validated['status'])) {
             $query->where('status', $validated['status']);
         }
 
         // Filter by gender.
-        if (!empty($validated['gender'])) {
+        if (! empty($validated['gender'])) {
             $query->where('gender', $validated['gender']);
         }
 
@@ -178,7 +178,7 @@ class EmployeeController extends Controller
         try {
             $updated = $employee->update($validated);
 
-            if (!$updated) {
+            if (! $updated) {
                 throw new \RuntimeException(
                     'Failed to update employee record.'
                 );

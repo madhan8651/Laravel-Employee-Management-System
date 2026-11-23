@@ -27,7 +27,7 @@ return new class extends Migration
             function ($user) {
                 DB::table('users')
                     ->where('id', $user->id)
-                    ->update(['username' => 'user-' . $user->id]);
+                    ->update(['username' => 'user-'.$user->id]);
             }
         );
 

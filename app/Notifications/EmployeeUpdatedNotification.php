@@ -32,12 +32,12 @@ class EmployeeUpdatedNotification extends Notification
     {
         $mail = (new MailMessage)
             ->subject('Your Employee Profile Has Been Updated')
-            ->greeting('Hello ' . $this->employee->name . ',')
+            ->greeting('Hello '.$this->employee->name.',')
             ->line('Your employee profile has been updated by an administrator.')
-            ->line('Updated sections: ' . implode(', ', $this->changedFields));
+            ->line('Updated sections: '.implode(', ', $this->changedFields));
 
         if ($this->updatedBy) {
-            $mail->line('Updated by: ' . $this->updatedBy);
+            $mail->line('Updated by: '.$this->updatedBy);
         }
 
         return $mail

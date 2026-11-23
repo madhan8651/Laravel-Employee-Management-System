@@ -33,21 +33,21 @@ class SecurityHeaders
 
         if ($isLocalTelescope) {
             $scriptSrc .= " 'unsafe-eval'";
-            $styleSrc .= " https://fonts.bunny.net";
-            $fontSrc .= " https://fonts.bunny.net";
+            $styleSrc .= ' https://fonts.bunny.net';
+            $fontSrc .= ' https://fonts.bunny.net';
         }
 
         $response->headers->set(
             'Content-Security-Policy',
-            "default-src 'self'; " .
-            "base-uri 'self'; " .
-            "object-src 'none'; " .
-            "frame-ancestors 'self'; " .
-            "form-action 'self'; " .
-            "img-src 'self' data: blob:; " .
-            $fontSrc . "; " .
-            "connect-src 'self'; " .
-            $scriptSrc . "; " .
+            "default-src 'self'; ".
+            "base-uri 'self'; ".
+            "object-src 'none'; ".
+            "frame-ancestors 'self'; ".
+            "form-action 'self'; ".
+            "img-src 'self' data: blob:; ".
+            $fontSrc.'; '.
+            "connect-src 'self'; ".
+            $scriptSrc.'; '.
             $styleSrc
         );
 

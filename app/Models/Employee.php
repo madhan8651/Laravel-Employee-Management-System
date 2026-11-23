@@ -2,22 +2,23 @@
 
 namespace App\Models;
 
+use App\Enums\EmployeeGender;
+use App\Enums\EmployeeStatus;
+use App\Traits\HasProfilePhoto;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use App\Enums\EmployeeStatus;
-use App\Enums\EmployeeGender;
-use Illuminate\Database\Eloquent\Builder;
-use App\Traits\HasProfilePhoto;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 class Employee extends Model
 {
-    use HasFactory, SoftDeletes, HasProfilePhoto;
+    use HasFactory, HasProfilePhoto, SoftDeletes;
 
     protected static function booted(): void
     {
@@ -52,22 +53,21 @@ class Employee extends Model
         'profile_photo',
         'status',
     ];
-    
 
     /**
      * Cast model attributes to appropriate PHP types.
      */
     protected function casts(): array
-{
-    return [
-        'date_of_birth' => 'date',
-        'date_of_joining' => 'date',
-        'salary' => 'decimal:2',
-        'status' => EmployeeStatus::class,
-        'gender' => EmployeeGender::class,
+    {
+        return [
+            'date_of_birth' => 'date',
+            'date_of_joining' => 'date',
+            'salary' => 'decimal:2',
+            'status' => EmployeeStatus::class,
+            'gender' => EmployeeGender::class,
             'address' => 'encrypted',
-    ];
-}
+        ];
+    }
 
     /**
      * Accessor: Get the employee's full name.
@@ -77,7 +77,7 @@ class Employee extends Model
         return Attribute::make(
             get: function () {
                 $fullName = trim(
-                    ($this->getAttribute('first_name') ?? '') . ' ' .
+                    ($this->getAttribute('first_name') ?? '').' '.
                     ($this->getAttribute('last_name') ?? '')
                 );
 
@@ -115,7 +115,7 @@ class Employee extends Model
     {
         return Attribute::make(
             get: fn () => $this->date_of_joining !== null
-                ? \Illuminate\Support\Carbon::parse($this->date_of_joining)->diffForHumans(now(), true)
+                ? Carbon::parse($this->date_of_joining)->diffForHumans(now(), true)
                 : null
         );
     }
@@ -142,7 +142,7 @@ class Employee extends Model
             set: fn (string $value) => ucfirst(strtolower($value))
         );
     }
-    
+
     // Return active employees.
     public function scopeActive(Builder $query): Builder
     {
@@ -164,7 +164,6 @@ class Employee extends Model
                 ->orWhere('employee_code', 'like', "%{$term}%");
         });
     }
-
 
     public function activityLogs(): MorphMany
     {

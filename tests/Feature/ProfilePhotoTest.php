@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Employee;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -134,5 +134,35 @@ class ProfilePhotoTest extends TestCase
         $this->actingAs($employee)
             ->get(route('profile-photos.user', $otherUser))
             ->assertForbidden();
+    }
+
+    public function test_employee_cannot_upload_pdf_as_profile_photo(): void
+    {
+        [$user, $employee] = $this->createEmployeeWithAccount();
+
+        $oldPhotoPath = $employee->profile_photo;
+
+        $response = $this->actingAs($user)->put(
+            route('employee.profile.update'),
+            [
+                'name' => $employee->name,
+                'phone' => $employee->phone,
+                'address' => $employee->address,
+                'profile_photo' => UploadedFile::fake()->create(
+                    'malicious.pdf',
+                    100,
+                    'application/pdf'
+                ),
+            ]
+        );
+
+        $response->assertSessionHasErrors('profile_photo');
+
+        $this->assertDatabaseHas('employees', [
+            'id' => $employee->id,
+            'profile_photo' => $oldPhotoPath,
+        ]);
+
+        Storage::disk('private_photos')->assertExists($oldPhotoPath);
     }
 }

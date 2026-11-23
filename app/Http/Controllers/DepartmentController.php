@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Department;
 use App\Exceptions\DepartmentHasEmployeesException;
-use Illuminate\Http\Request;
 use App\Http\Requests\StoreDepartmentRequest;
 use App\Http\Requests\UpdateDepartmentRequest;
+use App\Models\Department;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class DepartmentController extends Controller
@@ -166,7 +166,7 @@ class DepartmentController extends Controller
         Gate::authorize('delete', $department);
 
         if ($department->employees()->exists()) {
-            throw new DepartmentHasEmployeesException();
+            throw new DepartmentHasEmployeesException;
         }
 
         $department->delete();
@@ -176,5 +176,3 @@ class DepartmentController extends Controller
             ->with('success', 'Department deleted successfully.');
     }
 }
-
-

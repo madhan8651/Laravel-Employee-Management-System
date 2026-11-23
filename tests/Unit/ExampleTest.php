@@ -1,7 +1,6 @@
-﻿<?php
+<?php
 
 use App\Models\Employee;
-use App\Models\User;
 use App\Services\EmployeeService;
 use Illuminate\Support\Facades\Password;
 use PHPUnit\Framework\Attributes\Test;
@@ -12,7 +11,7 @@ class ExampleTest extends TestCase
     #[Test]
     public function it_sends_a_password_setup_link_to_the_employee_email(): void
     {
-        $employee = new Employee();
+        $employee = new Employee;
         $employee->email = 'employee@example.com';
 
         Password::shouldReceive('sendResetLink')
@@ -23,7 +22,7 @@ class ExampleTest extends TestCase
             )
             ->andReturn(Password::RESET_LINK_SENT);
 
-        $service = new EmployeeService();
+        $service = new EmployeeService;
 
         $result = $service->sendPasswordSetupLink($employee);
 

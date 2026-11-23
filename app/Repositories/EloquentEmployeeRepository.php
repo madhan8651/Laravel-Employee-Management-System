@@ -17,6 +17,7 @@ class EloquentEmployeeRepository implements EmployeeRepositoryInterface
     public function paginate(?int $perPage = null): LengthAwarePaginator
     {
         $perPage ??= (int) config('ems.pagination.employees', 10);
+
         return Employee::latest()->paginate($perPage);
     }
 

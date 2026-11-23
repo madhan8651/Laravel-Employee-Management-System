@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
                 Department::firstOrCreate(
                     ['name' => $name],
                     [
-                        'description' => $name . ' department',
+                        'description' => $name.' department',
                         'status' => 'active',
                     ]
                 );
@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
                 ['email' => 'admin@example.com'],
                 [
                     'name' => 'Admin',
-                    'username' => 'admin-' . Str::lower(Str::random(8)),
+                    'username' => 'admin-'.Str::lower(Str::random(8)),
                     'password' => Hash::make(Str::random(32)),
                     'role' => 'admin',
                     'status' => 'active',

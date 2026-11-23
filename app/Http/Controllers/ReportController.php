@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Employee;
 use App\Models\Department;
+use App\Models\Employee;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReportController extends Controller
 {
@@ -93,7 +93,7 @@ class ReportController extends Controller
                         $employee->name,
                         $employee->email,
                         $employee->designation,
-                        "\t" . (string) ($employee->phone ?? ''),
+                        "\t".(string) ($employee->phone ?? ''),
                     ]);
                 }
             });

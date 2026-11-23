@@ -14,7 +14,7 @@ class BirthdayEmailService
     {
         // Only send when the employee has a birthday today.
         if (
-            !$employee->date_of_birth ||
+            ! $employee->date_of_birth ||
             $employee->date_of_birth->month !== now()->month ||
             $employee->date_of_birth->day !== now()->day
         ) {

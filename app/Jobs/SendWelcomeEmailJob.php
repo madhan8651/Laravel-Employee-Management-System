@@ -17,8 +17,7 @@ class SendWelcomeEmailJob implements ShouldQueue
 
     public function __construct(
         public Employee $employee
-    ) {
-    }
+    ) {}
 
     public function handle(): void
     {

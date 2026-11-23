@@ -35,7 +35,7 @@ class AuthController extends Controller
         $login = trim($validated['login']);
 
         $throttleKey = Str::transliterate(
-            Str::lower($login) . '|' . $request->ip()
+            Str::lower($login).'|'.$request->ip()
         );
 
         // Limit failed login attempts.
@@ -125,6 +125,7 @@ class AuthController extends Controller
             'event' => 'failed_login',
         ]);
     }
+
     public function logout(Request $request)
     {
         Auth::logout();
@@ -137,6 +138,3 @@ class AuthController extends Controller
             ->with('success', 'You have been logged out successfully.');
     }
 }
-
-
-
