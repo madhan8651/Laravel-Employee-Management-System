@@ -47,8 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             edit: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M13.5 1a1.5 1.5 0 0 1 1.06 2.56l-8.8 8.8-3.4.85.85-3.4 8.8-8.8A1.5 1.5 0 0 1 13.5 1Z"/></svg>',
 
-            delete: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5.5 1a1 1 0 0 0-1 1v1H2v1.5h12V3h-2.5V2a1 1 0 0 0-1-1h-5ZM3.5 5h9l-.6 9.1a1 1 0 0 1-1 .9H5.1a1 1 0 0 1-1-.9L3.5 5Z"/></svg>',
-
             toggleOn: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5 3h6a5 5 0 0 1 0 10H5a5 5 0 0 1 0-10Z"/><circle cx="11" cy="8" r="2.5"/></svg>',
 
             toggleOff: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5 3h6a5 5 0 0 1 0 10H5a5 5 0 0 1 0-10Z"/><circle cx="5" cy="8" r="2.5"/></svg>'
@@ -122,17 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${iconSvg('edit')}
                 </a>
             `;
-        }
-
-        if (permissions.delete) {
-            html += actionForm(
-                employeeUrl('deleteUrl', id),
-                'DELETE',
-                'delete',
-                'btn-outline-danger',
-                'Delete Employee',
-                'Are you sure you want to delete this employee?'
-            );
         }
 
         if (permissions.update && status !== 'terminated') {

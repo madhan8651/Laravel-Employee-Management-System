@@ -333,23 +333,6 @@
                                             </a>
                                         @endcan
 
-                                        @can('delete', $employee)
-                                            <form method="POST"
-                                                  action="{{ route('admin.employees.destroy', $employee) }}"
-                                                  class="d-inline"
-                                                  onsubmit="return confirm('Are you sure you want to delete this employee?')">
-                                                @csrf
-                                                @method('DELETE')
-
-                                                <button type="submit"
-                                                        class="btn btn-sm btn-outline-danger"
-                                                        title="Delete Employee"
-                                                        aria-label="Delete Employee">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false"><path d="M5.5 1a1 1 0 0 0-1 1v1H2v1.5h12V3h-2.5V2a1 1 0 0 0-1-1h-5ZM3.5 5h9l-.6 9.1a1 1 0 0 1-1 .9H5.1a1 1 0 0 1-1-.9L3.5 5Z"/><path d="M5 6.5h1.5v6H5zm4.5 0H11v6H9.5z"/></svg>
-                                                </button>
-                                            </form>
-                                        @endcan
-
                                         @can('update', $employee)
                                             @if ($employeeStatus !== 'terminated')
                                                 <form action="{{ route('admin.employees.toggle-status', $employee) }}"

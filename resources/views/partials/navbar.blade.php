@@ -10,9 +10,7 @@
             <span class="brand-title">
                 {{ config('app.name', 'Employee Management System') }}
             </span>
-            <span class="brand-subtitle">
-                {{ auth()->user()?->role === 'admin' ? 'Administration Portal' : 'Employee Portal' }}
-            </span>
+            
         </span>
     </a>
 
